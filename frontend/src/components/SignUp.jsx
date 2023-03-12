@@ -44,7 +44,7 @@ const SignUp = () => {
     }
   };
 
-
+// Component JSX
   return (
     <main className='flex flex-col justify-center items-center'>
       <Alert />

@@ -1,4 +1,5 @@
 // Packages Import
+const path = require("path");
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
@@ -22,13 +23,19 @@ app.use(cors({
 app.use(morgan("tiny"));
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET))
+app.use(express.static(path.join(__dirname, "..", "public")));
 
 // Routes
-app.get("/", (req, res) => {
-  res.send("----Get Request to home routes-----");
+app.get("/api/v1", (req, res) => {
+  res.send("Get Request to Api route");
 });
 
+
 app.use("/api/v1/auth", authRouter);
+
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
+});
 
 
 // Middleware

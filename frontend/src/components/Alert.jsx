@@ -18,15 +18,14 @@ const Alert = () => {
   };
 
   if (show) {
-    console.log("I am from useEffect");
     clearAlert();
   }
 
   return show ? (
     <div
-      class={`fixed top-16 mt-1 left-1/2 transform -translate-x-1/2 p-2 max-w-4xl w-full ${alertClasses} `}
+      className={`fixed top-16 mt-1 left-1/2 transform -translate-x-1/2 p-2 max-w-4xl w-full ${alertClasses} `}
     >
-      <p class='text-sm font-medium'>{message}</p>
+      <p className='text-sm font-medium'>{message}</p>
     </div>
   ) : null;
 };

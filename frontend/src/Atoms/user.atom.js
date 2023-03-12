@@ -1,8 +1,16 @@
 import { atom } from "recoil";
 
+const userId = localStorage.getItem('userId')
+const user = localStorage.getItem('user')
+const email = localStorage.getItem('email')
+
 const userState = atom({
-  key: "alertState",
-  default: {},
+  key: "userState",
+  default: {
+    userId: userId || '',
+    user: user || '',
+    email: email || '',
+  },
 });
 
-export default alertState
+export default userState
