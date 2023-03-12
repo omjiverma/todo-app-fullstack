@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Alert from "./Alert";
 
 const SignIn = () => {
   const defaultFormFields = {
@@ -12,14 +13,17 @@ const SignIn = () => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
   };
+
+  
   return (
     <main className='h-[68vh] flex flex-col justify-center items-center'>
+      
       <div className='max-w-sm w-full border rounded-lg mx-auto px-3 py-4  my-auto'>
         <img src='/static/logo.png' className='w-56' alt='logo' />
         <h1 className='text-xl font-bold mt-3'>Sign In</h1>
         <form action='' className='mt-3 px-4'>
           <div>
-            <label for='email' className='text-lg font-normal ml-2'>
+            <label htmlFor='email' className='text-lg font-normal ml-2'>
               Email
             </label>{" "}
             <br />
@@ -36,7 +40,7 @@ const SignIn = () => {
           <br />
 
           <div>
-            <label for='password' className='text-lg font-normal ml-2'>
+            <label htmlFor='password' className='text-lg font-normal ml-2'>
               Password
             </label>{" "}
             <br />

@@ -1,5 +1,11 @@
 import { useState } from "react";
+import Alert from "./Alert";
+import alertState from "../Atoms/alert.atom";
+import { useSetRecoilState } from "recoil";
+import axios from "axios";
+
 const SignUp = () => {
+  const setAlert = useSetRecoilState(alertState);
 
   const defaultFormFields = {
     First_Name: "",
@@ -7,6 +13,7 @@ const SignUp = () => {
     Email: "",
     Password: "",
   };
+
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { First_Name, Last_Name, Email, Password } = formFields;
 
@@ -15,14 +22,38 @@ const SignUp = () => {
     setFormFields({ ...formFields, [name]: value });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!First_Name || !Last_Name || !Email || !Password) return;
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/auth/register",
+        {
+          firstName: First_Name,
+          lastName: Last_Name,
+          email: Email,
+          password: Password,
+        }
+      );
+      const message = response.data.msg
+      setAlert({ show: true, message: message, type: "success" });
+      setFormFields(defaultFormFields);
+    } catch (error) {
+      const errorMessage = error.response.data.msg
+      setAlert({ show: true, message: errorMessage, type: "danger" });
+    }
+  };
+
+
   return (
     <main className='flex flex-col justify-center items-center'>
+      <Alert />
       <div className='max-w-sm w-full border rounded-lg mx-auto px-3 py-4  my-10'>
         <img src='/static/logo.png' className='w-56' alt='logo' />
         <h1 className='text-xl font-bold mt-3'>SignUp</h1>
-        <form action='' className='mt-3 px-4'>
+        <form onSubmit={handleSubmit} className='mt-3 px-4'>
           <div>
-            <label for='fname' className='text-lg font-normal ml-2'>
+            <label htmlFor='fname' className='text-lg font-normal ml-2'>
               First name
             </label>{" "}
             <br />
@@ -34,11 +65,12 @@ const SignUp = () => {
               placeholder='First Name'
               onChange={handleChange}
               value={First_Name}
+              required
             />
           </div>
           <br />
           <div>
-            <label for='lname' className='text-lg font-normal ml-2'>
+            <label htmlFor='lname' className='text-lg font-normal ml-2'>
               Last name
             </label>{" "}
             <br />
@@ -50,12 +82,13 @@ const SignUp = () => {
               placeholder='Last Name'
               onChange={handleChange}
               value={Last_Name}
+              required
             />
           </div>
           <br />
 
           <div>
-            <label for='email' className='text-lg font-normal ml-2'>
+            <label htmlFor='email' className='text-lg font-normal ml-2'>
               Email
             </label>{" "}
             <br />
@@ -67,12 +100,13 @@ const SignUp = () => {
               placeholder='example@gmail.com'
               onChange={handleChange}
               value={Email}
+              required
             />
           </div>
           <br />
 
           <div>
-            <label for='password' className='text-lg font-normal ml-2'>
+            <label htmlFor='password' className='text-lg font-normal ml-2'>
               Password
             </label>{" "}
             <br />
@@ -84,6 +118,7 @@ const SignUp = () => {
               placeholder='password'
               onChange={handleChange}
               value={Password}
+              required
             />
           </div>
 
