@@ -1,22 +1,33 @@
-import { useState } from "react";
-import Alert from "./Alert";
-import alertState from "../Atoms/alert.atom";
+// Import necessary libraries and components
+import { useState, useEffect } from "react";
+import { useRecoilValue } from "recoil";
+import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import axios from "axios";
 
-const SignUp = () => {
-  const setAlert = useSetRecoilState(alertState);
+import Alert from "./Alert";
+import alertState from "../Atoms/alert.atom";
+import userState from "../Atoms/user.atom";
 
-  const defaultFormFields = {
+// Define SignUp component
+const SignUp = () => {
+  // State
+  const [formFields, setFormFields] = useState({
     First_Name: "",
     Last_Name: "",
     Email: "",
     Password: "",
-  };
+  });
 
-  const [formFields, setFormFields] = useState(defaultFormFields);
+  // Hooks
+  const navigate = useNavigate();
+  const setAlert = useSetRecoilState(alertState);
+  const userData = useRecoilValue(userState);
+
+  // Destructuring
   const { First_Name, Last_Name, Email, Password } = formFields;
 
+  // Handlers
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
@@ -24,8 +35,12 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!First_Name || !Last_Name || !Email || !Password) return;
+    // Validation
+    if (!First_Name || !Last_Name || !Email || !Password) {
+      return;
+    }
     try {
+      // API call
       const response = await axios.post(
         "http://localhost:8000/api/v1/auth/register",
         {
@@ -35,16 +50,30 @@ const SignUp = () => {
           password: Password,
         }
       );
-      const message = response.data.msg
+      const message = response.data.msg;
+      // Success
       setAlert({ show: true, message: message, type: "success" });
-      setFormFields(defaultFormFields);
+      setFormFields({
+        First_Name: "",
+        Last_Name: "",
+        Email: "",
+        Password: "",
+      });
     } catch (error) {
-      const errorMessage = error.response.data.msg
+      // Failure
+      const errorMessage = error.response.data.msg;
       setAlert({ show: true, message: errorMessage, type: "danger" });
     }
   };
 
-// Component JSX
+  useEffect(() => {
+    // Redirect if user logged in
+    if (userData.user) {
+      setTimeout(() => {
+        navigate("/");
+      }, 10);
+    }
+  }, [userData.user, navigate]);
   return (
     <main className='flex flex-col justify-center items-center'>
       <Alert />

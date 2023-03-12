@@ -1,19 +1,22 @@
-import { useState } from "react";
+// Import necessary libraries and components
+import { useState, useEffect } from "react";
+import { useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import Alert from "./Alert";
 import alertState from "../Atoms/alert.atom";
-import { useSetRecoilState } from "recoil";
 import userState from "../Atoms/user.atom";
-import { useRecoilState } from "recoil";
-import axios from "axios";
 import addUserToLocalStorage from "../utils/addUserToLocalStorage";
-import { redirect } from "react-router-dom";
 
+// Define SignIn component
 const SignIn = () => {
-  // Global States
+  // Declare hooks
+  const navigate = useNavigate();
   const setAlert = useSetRecoilState(alertState);
   const [userData, setUserData] = useRecoilState(userState);
 
-  // Form Input Handle Logic Start
+  // Define form state and input handling functions
   const defaultFormFields = {
     Email: "",
     Password: "",
@@ -26,12 +29,14 @@ const SignIn = () => {
     setFormFields({ ...formFields, [name]: value });
   };
 
-  // Handle Login
+  // Handle login form submission
   const handleLogin = async (e) => {
     e.preventDefault();
+    // Check if all inputs are present
     if (!Email || !Password) return;
 
     try {
+      // Send login request to backend API
       const response = await axios.post(
         "http://localhost:8000/api/v1/auth/login",
         {
@@ -39,22 +44,34 @@ const SignIn = () => {
           password: Password,
         }
       );
+      // Save user data to local storage and global state
       const { userId, user, email } = response.data.user;
       addUserToLocalStorage({ userId, user, email });
       setUserData({ userId, user, email });
+      // Show success alert and reset form
       setAlert({
         show: true,
         message: "Logged In SuccessFully, Redirecting",
         type: "success",
       });
       setFormFields(defaultFormFields);
-      redirect("/")
     } catch (error) {
+      // Show error alert if login fails
       const errorMessage = error.response.data.msg;
       setAlert({ show: true, message: errorMessage, type: "danger" });
     }
   };
-  // Component JSX
+
+  // Redirect to homepage if user is already logged in
+  useEffect(() => {
+    if (userData.user) {
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
+    }
+  }, [userData.user, navigate]);
+
+  // Render component JSX
   return (
     <main className='h-[68vh] flex flex-col justify-center items-center'>
       <Alert />
