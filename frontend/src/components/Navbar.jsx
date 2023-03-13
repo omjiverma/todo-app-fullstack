@@ -1,4 +1,5 @@
 import { Outlet, Link } from "react-router-dom";
+import axios from "axios"
 import userState from "../Atoms/user.atom";
 import { useRecoilState } from "recoil";
 import removeUserFromLocalStorage from "../utils/removeUserFromLocalStorage";
@@ -6,8 +7,14 @@ import removeUserFromLocalStorage from "../utils/removeUserFromLocalStorage";
 const Navbar = () => {
   const [userData, setUserData] = useRecoilState(userState);
   const { user } = userData;
-  console.log(userData);
-  const handleLogOut = () => {
+  const handleLogOut = async() => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/api/v1/auth/logout",
+      );
+    } catch (error) {
+      
+    }
     removeUserFromLocalStorage();
     setUserData({ userId: "", user: "", email: "" });
   };

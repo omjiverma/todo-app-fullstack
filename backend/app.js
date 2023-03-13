@@ -15,6 +15,7 @@ const errorHandlerMiddleware = require("./middlewares/errorHandler.middleware");
 
 // Router Imports
 const authRouter = require("./routes/auth.routes");
+const taskRouter = require("./routes/task.routes")
 
 // Middleware
 app.use(cors({
@@ -23,7 +24,7 @@ app.use(cors({
 app.use(morgan("tiny"));
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET))
-app.use(express.static(path.join(__dirname, "..", "public")));
+app.use(express.static(path.join(__dirname, "public")));
 
 // Routes
 app.get("/api/v1", (req, res) => {
@@ -32,9 +33,10 @@ app.get("/api/v1", (req, res) => {
 
 
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/task", taskRouter);
 
 app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 
