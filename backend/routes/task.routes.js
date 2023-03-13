@@ -8,16 +8,17 @@ const {
   createTask,
   updateTask,
   deleteTask,
-  getAllTask,
+  getAllTasks,
 } = require("../controllers/task.controller");
 
 taskRouter
   .route("/")
   .post(authenticateUser, createTask)
-  .get(authenticateUser, getAllTask);
+  .get(authenticateUser, getAllTasks);
+
 taskRouter
   .route("/:id")
   .patch(authenticateUser, updateTask)
   .delete(authenticateUser, deleteTask);
 
-  module.exports = taskRouter;
+module.exports = taskRouter;
