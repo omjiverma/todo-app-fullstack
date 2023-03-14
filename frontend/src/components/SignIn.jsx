@@ -66,7 +66,7 @@ const SignIn = () => {
   useEffect(() => {
     if (userData.user) {
       setTimeout(() => {
-        navigate("/");
+        navigate("/dashboard");
       }, 1000);
     }
   }, [userData.user, navigate]);

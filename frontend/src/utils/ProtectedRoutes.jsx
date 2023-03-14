@@ -5,7 +5,7 @@ import userState from "../Atoms/user.atom";
 const ProtectedRoutes = ({ children }) => {
   const { user } = useRecoilValue(userState);
   if (!user) {
-    return <Navigate to='/' />;
+    return <Navigate to='/signin' />;
   }
   return children;
 };
