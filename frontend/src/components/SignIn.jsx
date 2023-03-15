@@ -38,7 +38,7 @@ const SignIn = () => {
     try {
       // Send login request to backend API
       const response = await axios.post(
-        "http://localhost:8000/api/v1/auth/login",
+        `/api/v1/auth/login`,
         {
           email: Email,
           password: Password,

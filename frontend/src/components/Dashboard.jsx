@@ -1,31 +1,32 @@
-import { useSetRecoilState } from "recoil";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import axios from "axios";
 
-import Alert from "./Alert";
-import alertState from "../Atoms/alert.atom";
 import userState from "../Atoms/user.atom";
 import removeUserFromLocalStorage from "../utils/removeUserFromLocalStorage";
 
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 const Dashboard = () => {
+  // Get user data from Recoil state
   const [userData, setUserData] = useRecoilState(userState);
   const { user } = userData;
 
+  // Initialize state variables for editing a task
   const [isEditing, setIsEditing] = useState(false);
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [taskInput, setTaskInput] = useState("");
-  const [taskList, setTaskList] = useState([,]);
 
+  // Initialize task list state variable
+  const [taskList, setTaskList] = useState([]);
+
+  // Fetch all tasks from API and update task list state variable
   const fetchAllTasks = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/v1/task");
+      const response = await axios.get('/api/v1/task');
       const { allTasks } = response.data;
       setTaskList(allTasks);
-      setTaskInput("")
+      setTaskInput("");
     } catch (error) {
       const message = error.response.data.msg;
       if (message === "Invalid Authentication") {
@@ -35,25 +36,32 @@ const Dashboard = () => {
     }
   };
 
+  // Fetch all tasks on component mount
   useEffect(() => {
     fetchAllTasks();
   }, []);
 
+  // Handle change in input field for task
   const handleChange = (e) => {
     setTaskInput(e.target.value);
   };
 
+  // Set state variables for editing a task
   const handleEditTask = (id) => {
     const specificTask = taskList.find((item) => item._id === id);
     setIsEditing(true);
     setTaskInput(specificTask.task);
-    setEditingTaskId(specificTask._id)
+    setEditingTaskId(specificTask._id);
   };
 
-  const handleEditSubmit = async() => {
+  // Handle submission of edited task
+  const handleEditSubmit = async () => {
     try {
       const updatedTask = { task: taskInput };
-      const response = await axios.patch(`api/v1/task/${editingTaskId}`, updatedTask);
+      const response = await axios.patch(
+        '/api/v1/task/${editingTaskId}',
+        updatedTask
+      );
       fetchAllTasks();
       setIsEditing(false);
       setTaskInput("");
@@ -62,19 +70,27 @@ const Dashboard = () => {
     }
   };
 
-  const handleAddTask = async() => {
+  // Handle addition of new task
+  const handleAddTask = async () => {
     try {
-      const response = await axios.post('api/v1/task', { task: taskInput });
+      const response = await axios.post("/api/v1/task", {
+        task: taskInput,
+      });
       fetchAllTasks();
     } catch (error) {
-      
+      console.log(error);
     }
   };
 
-  const handleDeleteTask = async(id) => {
-    const response = await axios.delete(`api/v1/task/${id}`);
+  // Handle deletion of a task
+  const handleDeleteTask = async (id) => {
+    const response = await axios.delete(
+      '/api/v1/task/${id}'
+    );
     fetchAllTasks();
   };
+
+  // Render component
 
   return (
     <main className='flex flex-col items-center drop-shadow-xl min-h-[67vh]'>
@@ -91,7 +107,10 @@ const Dashboard = () => {
             onChange={handleChange}
             className='bg-slate-100 border-0 focus:outline-none focus:ring-0'
           />
-          <button onClick={!isEditing? handleAddTask: handleEditSubmit} className='px-2 py-2 w-20 bg-[#FF4F5A] text-white hover:drop-shadow-md'>
+          <button
+            onClick={!isEditing ? handleAddTask : handleEditSubmit}
+            className='px-2 py-2 w-20 bg-[#FF4F5A] text-white hover:drop-shadow-md'
+          >
             {!isEditing ? "Add Task" : "Edit"}
           </button>
         </div>
@@ -109,7 +128,10 @@ const Dashboard = () => {
                     onClick={() => handleEditTask(taskItem._id)}
                     className='w-5  mx-1 text-green-500 hover:scale-110'
                   />
-                  <TrashIcon onClick={() => handleDeleteTask(taskItem._id)} className='w-5  mx-1 text-[#FF4F5A] hover:scale-110' />
+                  <TrashIcon
+                    onClick={() => handleDeleteTask(taskItem._id)}
+                    className='w-5  mx-1 text-[#FF4F5A] hover:scale-110'
+                  />
                 </div>
               </div>
             );

@@ -42,7 +42,7 @@ const SignUp = () => {
     try {
       // API call
       const response = await axios.post(
-        "http://localhost:8000/api/v1/auth/register",
+        `/api/v1/auth/register`,
         {
           firstName: First_Name,
           lastName: Last_Name,
