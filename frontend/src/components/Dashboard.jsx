@@ -59,7 +59,7 @@ const Dashboard = () => {
     try {
       const updatedTask = { task: taskInput };
       const response = await axios.patch(
-        '/api/v1/task/${editingTaskId}',
+        `/api/v1/task/${editingTaskId}`,
         updatedTask
       );
       fetchAllTasks();
@@ -85,7 +85,7 @@ const Dashboard = () => {
   // Handle deletion of a task
   const handleDeleteTask = async (id) => {
     const response = await axios.delete(
-      '/api/v1/task/${id}'
+      `/api/v1/task/${id}`
     );
     fetchAllTasks();
   };
